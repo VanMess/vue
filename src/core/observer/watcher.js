@@ -20,6 +20,7 @@ let uid = 0
  * A watcher parses an expression, collects dependencies,
  * and fires callback when the expression value changes.
  * This is used for both the $watch() api and directives.
+ * 观察者模式
  */
 export default class Watcher {
   vm: Component;
@@ -89,6 +90,10 @@ export default class Watcher {
 
   /**
    * Evaluate the getter, and re-collect dependencies.
+   * 非常重要的点，在watcher的get周期内，会收集数据依赖
+   * 那么问题就来了
+   * 1. 这种结构是不支持异步的，getter必须是同步的
+   * 2. 什么情况下生成watcher？
    */
   get () {
     pushTarget(this)
@@ -206,6 +211,11 @@ export default class Watcher {
 
   /**
    * Depend on all deps collected by this watcher.
+   * 用于应对多级watcher的情况
+   * 比如，watcherA 依赖于dep1、dep2
+   * watcherB依赖于watcherA
+   * 那么，watcherB 也就必然依赖于dep1、dep2
+   * 为了使结构关系简化，这里让B直接去依赖dep，而不需要中间加多一层A
    */
   depend () {
     let i = this.deps.length
@@ -245,6 +255,8 @@ function traverse (val: any) {
   _traverse(val, seenObjects)
 }
 
+// 这个逻辑就有点绕了，其实是通过调用属性的“get”
+// 触发dep的收集
 function _traverse (val: any, seen: ISet) {
   let i, keys
   const isA = Array.isArray(val)

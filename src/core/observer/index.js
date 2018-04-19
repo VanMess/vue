@@ -61,6 +61,7 @@ export class Observer {
   walk (obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
+      // 一个一个属性地定义
       defineReactive(obj, keys[i], obj[keys[i]])
     }
   }
@@ -103,6 +104,8 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * Attempt to create an observer instance for a value,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
+ * 
+ * asRootData 属性是在每个每次initdata的时候调用的
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
@@ -198,7 +201,7 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
   }
   if (hasOwn(target, key)) {
     target[key] = val
-    return val
+    
   }
   const ob = (target: any).__ob__
   if (target._isVue || (ob && ob.vmCount)) {

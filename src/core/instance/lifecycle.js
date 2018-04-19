@@ -192,7 +192,10 @@ export function mountComponent (
       vm._update(vm._render(), hydrating)
     }
   }
-
+  // 这里其实在watcher对象隐式调用了 updateComponent 函数
+  // 即touch
+  // 在render的过程中，收集了依赖！！！
+  // 这里是整个实例的watcher啊
   vm._watcher = new Watcher(vm, updateComponent, noop)
   hydrating = false
 

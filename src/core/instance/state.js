@@ -48,13 +48,20 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
+  // 根据opt的定义，初始化 $props 属性
+  // 此时并没有接收上级组件传递过来的数据
+  // props 属性与wachter无关
   if (opts.props) initProps(vm, opts.props)
   if (opts.methods) initMethods(vm, opts.methods)
+  // data 属性与wachter无关
+  // 初始化data，很简单，只是将观察data值
   if (opts.data) {
     initData(vm)
   } else {
     observe(vm._data = {}, true /* asRootData */)
   }
+  // 每个computed属性都会生成一个watcher
+  // 
   if (opts.computed) initComputed(vm, opts.computed)
   if (opts.watch && opts.watch !== nativeWatch) {
     initWatch(vm, opts.watch)
@@ -97,6 +104,8 @@ function initProps (vm: Component, propsOptions: Object) {
     } else {
       defineReactive(props, key, value)
     }
+    // @todo 
+    // static props 是什么情况下产生的？
     // static props are already proxied on the component's prototype
     // during Vue.extend(). We only need to proxy props defined at
     // instantiation here.
