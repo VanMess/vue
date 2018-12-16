@@ -14,6 +14,7 @@ export function initAssetRegisters (Vue: GlobalAPI) {
       definition: Function | Object
     ): Function | Object | void {
       if (!definition) {
+        // 这里的options是vue全局options
         return this.options[type + 's'][id]
       } else {
         /* istanbul ignore if */

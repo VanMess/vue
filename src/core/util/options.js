@@ -24,6 +24,7 @@ import {
  * Option overwriting strategies are functions that handle
  * how to merge a parent option value and a child option
  * value into the final value.
+ * 合并策略
  */
 const strats = config.optionMergeStrategies
 
@@ -350,6 +351,9 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
 /**
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
+ * 合并配置对象
+ * 从代码上看，是用原型链方式合并的
+ * 这是option的合并，与组件没有必然关系
  */
 export function mergeOptions (
   parent: Object,
@@ -416,6 +420,7 @@ export function resolveAsset (
   const PascalCaseId = capitalize(camelizedId)
   if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]
   // fallback to prototype chain
+  // 尝试从原型链获取定义
   const res = assets[id] || assets[camelizedId] || assets[PascalCaseId]
   if (process.env.NODE_ENV !== 'production' && warnMissing && !res) {
     warn(

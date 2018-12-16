@@ -24,7 +24,9 @@ function _update (oldVnode, vnode) {
   const oldDirs = normalizeDirectives(oldVnode.data.directives, oldVnode.context)
   const newDirs = normalizeDirectives(vnode.data.directives, vnode.context)
 
+  // 节点上新增的指令
   const dirsWithInsert = []
+  // 节点上旧指令
   const dirsWithPostpatch = []
 
   let key, oldDir, dir
@@ -33,6 +35,8 @@ function _update (oldVnode, vnode) {
     dir = newDirs[key]
     if (!oldDir) {
       // new directive, bind
+      // 指令的bind事件
+      // 基于新旧对比，新增的指令会触发
       callHook(dir, 'bind', vnode, oldVnode)
       if (dir.def && dir.def.inserted) {
         dirsWithInsert.push(dir)
@@ -40,6 +44,7 @@ function _update (oldVnode, vnode) {
     } else {
       // existing directive, update
       dir.oldValue = oldDir.value
+      // update 事件
       callHook(dir, 'update', vnode, oldVnode)
       if (dir.def && dir.def.componentUpdated) {
         dirsWithPostpatch.push(dir)
@@ -95,6 +100,7 @@ function normalizeDirectives (
       dir.modifiers = emptyModifiers
     }
     res[getRawDirName(dir)] = dir
+    // 解析指令定义信息
     dir.def = resolveAsset(vm.$options, 'directives', dir.name, true)
   }
   return res
